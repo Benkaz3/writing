@@ -59,6 +59,7 @@ textarea#body{flex:1;resize:none;border:0;border-radius:0;padding:1.5rem 2rem;fo
 <main>
   <div class="col">
     <div class="colhead"><span id="vlabel">Draft</span><span id="words"></span></div>
+    <div id="locked" style="display:none;padding:.5rem 1rem;background:var(--aside);border-bottom:1px solid var(--rule);font-size:.85rem;display:none;align-items:center;gap:.6rem"><span>This version has been coached, so it is locked to keep the record honest.</span><button id="lockednew" class="primary">Start the next version</button><a href="#" id="unlock" style="margin-left:auto;color:var(--muted);font-size:.8rem">unlock anyway</a></div>
     <div id="empty">Start with <b>New piece</b>. Give it a title, then write version 1 here. When you want feedback, press <b>Coach</b>. After you read the flags, press <b>New version</b>, revise, and say what you changed.</div>
     <textarea id="body" spellcheck="true" placeholder="Write here." style="display:none"></textarea>
     <div id="changesbox" style="display:none"><span>What changed in this version:</span><input id="changes" placeholder="In your own words, one line."></div>
@@ -102,7 +103,9 @@ async function openVersion(slug,n){await flush();cur={slug,n};const d=await api(
  $('empty').style.display='none';$('body').style.display='';$('changesbox').style.display='';
  $('body').value=d.body;$('changes').value=d.fm.changes||'';$('vlabel').textContent=`${piece()?.title||slug} · v${n}${d.fm.draft==='true'?' · draft':' · public'}`;$('lens').style.display='';$('lens').value=piece()?.genre||'reflective';$('pdate').textContent=d.fm.date||'';
  $('log').textContent=d.log||'No passes yet.';$('coachmeta').textContent=passCount(d.log);$('coachout').innerHTML=lastPass(d.log);
- renderTabs();render();dirty=false;setStatus('Saved');$('body').focus()}
+ renderTabs();render();dirty=false;setStatus('Saved');setLock(wasCoached(d.log,n));if(!$('body').readOnly)$('body').focus()}
+function wasCoached(log,n){return new RegExp('^## .* - v'+n+' - (?!.*- reader\\s*$)','m').test(log||'')}
+function setLock(on){$('body').readOnly=on;$('changes').readOnly=on;$('locked').style.display=on?'flex':'none';$('body').style.opacity=on?.7:1}
 function passCount(log){const c=(log.match(/^## /gm)||[]).length;return c?c+' pass'+(c>1?'es':''):''}
 function lastPass(log){const m=log.trim().split(/^(?=## )/m).filter(Boolean).pop();if(!m)return '<p class="hint">One pass per version. At most three flags, one thing to keep, one next step. Nothing is rewritten for you. Takes about a minute.</p>';return '<div class="result">'+fmt(m)+'</div>'}
 function fmt(t){return t.replace(/^```.*$/gm,'').trim().replace(/</g,'&lt;').replace(/^(FLAGS|KEEP|NEXT)\s*$/gm,'<b>$1</b>')}
@@ -119,9 +122,10 @@ $('ntitle').oninput=()=>{$('nslug').value=slugify($('ntitle').value)};
 $('ncancel').onclick=()=>$('modal').classList.remove('open');
 $('ncreate').onclick=async()=>{try{const r=await api('/api/piece',{slug:$('nslug').value,title:$('ntitle').value,genre:$('ngenre').value});$('modal').classList.remove('open');await loadPieces();await openVersion(r.slug,1)}catch(e){toast(e.message)}};
 $('runcoach').onclick=async()=>{if(!cur.slug)return;await flush();const b=$('runcoach');b.disabled=true;$('coachout').innerHTML='<p class="hint"><span class="spin"></span>Coaching v'+cur.n+'. Reading every version and your patterns file. About a minute.</p>';
- try{const r=await api('/api/coach',{slug:cur.slug,n:cur.n,dimension:$('dimension').value});$('coachout').innerHTML='<div class="result">'+fmt(r.text)+'</div>';$('log').textContent=r.log||'';$('coachmeta').textContent=passCount(r.log)}catch(e){$('coachout').innerHTML='<p class="hint warn">Coach failed: '+e.message.replace(/</g,'&lt;')+'</p>'}finally{b.disabled=false}};
+ try{const r=await api('/api/coach',{slug:cur.slug,n:cur.n,dimension:$('dimension').value});$('coachout').innerHTML='<div class="result">'+fmt(r.text)+'</div>';$('log').textContent=r.log||'';$('coachmeta').textContent=passCount(r.log);setLock(true)}catch(e){$('coachout').innerHTML='<p class="hint warn">Coach failed: '+e.message.replace(/</g,'&lt;')+'</p>'}finally{b.disabled=false}};
 $('runreader').onclick=async()=>{if(!cur.slug)return;await flush();const b=$('runreader'),c=$('runcoach');b.disabled=c.disabled=true;$('coachout').innerHTML='<p class="hint"><span class="spin"></span>Reading v'+cur.n+' as a reader. About a minute.</p>';
  try{const r=await api('/api/reader',{slug:cur.slug,n:cur.n});$('coachout').innerHTML='<div class="result"><b>READER</b>'+fmt(r.text)+'</div>';$('log').textContent=r.log||'';$('coachmeta').textContent=passCount(r.log)}catch(e){$('coachout').innerHTML='<p class="hint warn">Reader failed: '+e.message.replace(/</g,'&lt;')+'</p>'}finally{b.disabled=c.disabled=false}};
+$('lockednew').onclick=newVersion;$('unlock').onclick=e=>{e.preventDefault();setLock(false);$('body').focus();toast('Unlocked. Small fixes only; revisions belong in a new version.')};
 $('commit').onclick=async()=>{await flush();try{const r=await api('/api/commit',{slug:cur.slug||'workbench',message:cur.slug?`${cur.slug}: v${cur.n} edits`:''});toast(r.out)}catch(e){toast(e.message)}};
 let pubArmed=false;$('publish').onclick=async()=>{if(!cur.slug)return;if(!pubArmed){pubArmed=true;$('publish').textContent='Confirm: publish all versions and push';setTimeout(()=>{pubArmed=false;$('publish').textContent='Publish'},5000);return}
  pubArmed=false;$('publish').textContent='Publishing…';$('publish').disabled=true;await flush();try{const r=await api('/api/publish',{slug:cur.slug});toast(r.out,8000);await loadPieces();await openVersion(cur.slug,cur.n)}catch(e){toast('Publish failed: '+e.message,8000)}finally{$('publish').textContent='Publish';$('publish').disabled=false}};
