@@ -120,6 +120,18 @@ class H(BaseHTTPRequestHandler):
                 code, out = run(["bin/new-piece", slug, title, genre])
                 if code: raise RuntimeError(out)
                 self.send_json({"ok": True, "slug": slug})
+            elif self.path == "/api/piece/genre":
+                genre = data["genre"]
+                if genre not in ("reflective", "narrative", "analytical"): raise ValueError("unknown lens")
+                idx = os.path.join(piece_dir(data["slug"]), "_index.md")
+                fm, body = split_fm(open(idx, encoding="utf-8").read())
+                txt = open(idx, encoding="utf-8").read()
+                if re.search(r"^genre:.*$", txt, re.M):
+                    txt = re.sub(r"^genre:.*$", f"genre: {genre}", txt, count=1, flags=re.M)
+                else:
+                    txt = txt.replace("\n---\n", f"\ngenre: {genre}\n---\n", 1)
+                open(idx, "w", encoding="utf-8").write(txt)
+                self.send_json({"ok": True, "genre": genre})
             elif self.path == "/api/version/save":
                 p = version_path(data["slug"], data["n"])
                 fm, _ = split_fm(open(p, encoding="utf-8").read())
