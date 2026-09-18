@@ -165,7 +165,13 @@ class H(BaseHTTPRequestHandler):
                 code, out = run(["git", "commit", "-q", "-m", msg])
                 self.send_json({"ok": True, "out": out if code else "committed"})
             elif self.path == "/api/publish":
-                slug = data["slug"]; piece_dir(slug)
+                slug = data["slug"]; d = piece_dir(slug)
+                vs = sorted(int(m.group(1)) for f in os.listdir(d) for m in [re.match(r"^v(\d+)\.md$", f)] if m)
+                if len(vs) >= 2:
+                    lfm, lbody = split_fm(open(os.path.join(d, f"v{vs[-1]}.md"), encoding="utf-8").read())
+                    _, pbody = split_fm(open(os.path.join(d, f"v{vs[-2]}.md"), encoding="utf-8").read())
+                    if lbody.strip() == pbody.strip() and not lfm.get("changes", "").strip():
+                        os.remove(os.path.join(d, f"v{vs[-1]}.md"))
                 cmd = ["bin/publish", slug] + ([str(int(data["n"]))] if data.get("n") else [])
                 code, out = run(cmd)
                 if code: raise RuntimeError(out)
