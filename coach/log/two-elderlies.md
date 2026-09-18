@@ -116,3 +116,18 @@ Also seen, not flagged (cutting): closing paragraph summarises ("This means the 
 Pattern counts: one new open pattern added (throat-clearing announcements), count 1; others not incremented, same piece. No pattern meets the fade rule (this is not a new first draft).
 KEEP: the split at "Then we must break down" - the cooking paragraph now ends on its own claim ("It does not have an impact") and the reader sees the turn to the TV show as a turn.
 NEXT: v4 - finish the two open paragraphs, then cut every sentence that only announces what the next sentence does; fill in `changes:`.
+
+## 2026-09-18 - v4 - Vocabulary (reflective lens by default, no `genre:` in _index.md)
+changes note: empty again, so no stated intention to coach against. Diff v3 -> v4: the essay's question now stands as its own paragraph; "Let's put it this way", "Let's circle back to the discrimination and answer" and "Let's simplify it" are gone; the "other factor" paragraph rewritten from six sentences to five, the "historical events / validation and thinking process" sentences and "creatively better product" cut. Nine paragraphs now.
+Earlier flags (v3):
+1. "The other factor that also makes" - addressed: the first sentence announces unsurprising elements and every sentence after it serves that; "The difference is the elements" is gone.
+2. "Then the real question one must" - addressed: the opening paragraph now holds the moment and the cultural reading, the question has its own paragraph.
+3. "Let's simplify it" - addressed at all three spots.
+Flags this pass:
+1. "the unsurprised elements introduced" - participle adjective form: the -ed form names the person who feels it, the noun here is a thing.
+2. "People can be very passionate, physically" - connotation: the adjective carries romantic charge in a sentence arguing the touch is not romantic.
+3. "they would freak out" - register shift: colloquial verb beside "independent variable", "one must ask", "in the context of this analysis".
+Also seen, not flagged (vocabulary): "an apartment complex yard" generic nouns for the moment, no hour, no place only this writer could name; "create less social issues" and "the issue of discrimination is born" abstractions standing for what people do; "the true nature of the subject" abstraction; "the brand people" register; "components", "elements", "factor" used interchangeably; "expand" gone with the cut sentence. Carried over: "Two main things - one is" (~40 words); "the writer herself creates these elements themselves" doubled reflexive; "an hilarious"; closing paragraph summarises; "Not very often I guess", "My guess is that" hedges; typos ("informercial", "the who industry", "could a a part") - retired Spelling slips, still reappearance 1 of 2 (same piece).
+Pattern counts: three new open patterns added (participle adjective form; connotation working against the claim; register shift), count 1 each; others not incremented, same piece. No pattern meets the fade rule (not a new first draft).
+KEEP: "It works for the audience but" - the rewritten paragraph ends on a short claim the writer risks, and the cut of the three sentences before it lets the reader reach that claim.
+NEXT: v5 - find your own word for each of the three spots, and fill in `changes:` so the next pass can coach against your intention.
