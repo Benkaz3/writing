@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
-# Start a new piece: bin/new-piece <slug> "Title"
+# Start a new piece: bin/new-piece <slug> "Title" [genre]   genre = reflective (default) | narrative | analytical
 # Creates content/posts/<slug>/_index.md and v1.md (both draft), then prints the v1 path.
 set -euo pipefail
-if [ $# -lt 2 ]; then echo "usage: bin/new-piece <slug> \"Title\"" >&2; exit 1; fi
-slug=$1; title=$2
+if [ $# -lt 2 ]; then echo "usage: bin/new-piece <slug> \"Title\" [genre]" >&2; exit 1; fi
+slug=$1; title=$2; genre=${3:-reflective}
+case "$genre" in reflective|narrative|analytical) ;; *) echo "genre must be reflective, narrative or analytical" >&2; exit 1;; esac
 root=$(cd "$(dirname "$0")/.." && pwd)
 dir="$root/content/posts/$slug"
 if [ -e "$dir" ]; then echo "already exists: $dir" >&2; exit 1; fi
@@ -14,6 +15,7 @@ cat > "$dir/_index.md" <<MD
 title: "$title"
 description: ""
 date: $today
+genre: $genre
 type: piece
 cascade:
   type: piece

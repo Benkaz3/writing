@@ -69,7 +69,7 @@ textarea#body{flex:1;resize:none;border:0;border-radius:0;padding:1.5rem 2rem;fo
   <div class="col" id="coachcol">
     <div class="colhead"><span>Coach</span><span id="coachmeta"></span></div>
     <div id="coach">
-      <div class="row"><button id="runcoach" class="primary">Coach this version</button><input id="dimension" placeholder="dimension (optional)" title="Leave blank to follow the ladder"></div>
+      <div class="row"><button id="runcoach" class="primary">Coach this version</button><button id="runreader" title="Plain account of a reader's experience. No flags, no advice.">Read as a reader</button><input id="dimension" placeholder="dimension (optional)" title="Leave blank to follow the ladder"></div>
       <div id="coachout"><p class="hint">One pass per version. At most three flags, one thing to keep, one next step. Nothing is rewritten for you. Takes about a minute.</p></div>
       <details id="logwrap"><summary>Past passes</summary><pre id="log"></pre></details>
     </div>
@@ -79,6 +79,7 @@ textarea#body{flex:1;resize:none;border:0;border-radius:0;padding:1.5rem 2rem;fo
   <strong>New piece</strong>
   <label>Title<input id="ntitle" placeholder="Why I write in the morning"></label>
   <label>Web address (slug)<input id="nslug" placeholder="why-i-write-in-the-morning"></label>
+  <label>Lens<select id="ngenre" style="width:100%"><option value="reflective">Reflective essay</option><option value="narrative">Narrative</option><option value="analytical">Analytical</option></select></label>
   <div style="display:flex;gap:.5rem;justify-content:flex-end"><button id="ncancel">Cancel</button><button id="ncreate" class="primary">Create</button></div>
 </div></div>
 <div id="toast"></div>
@@ -98,7 +99,7 @@ function renderTabs(){const p=piece();const t=$('tabs');if(!p){t.innerHTML='';re
  $('newver').onclick=newVersion}
 async function openVersion(slug,n){await flush();cur={slug,n};const d=await api(`/api/version?slug=${slug}&n=${n}`);
  $('empty').style.display='none';$('body').style.display='';$('changesbox').style.display='';
- $('body').value=d.body;$('changes').value=d.fm.changes||'';$('vlabel').textContent=`${piece()?.title||slug} · v${n}${d.fm.draft==='true'?' · draft':' · public'}`;$('pdate').textContent=d.fm.date||'';
+ $('body').value=d.body;$('changes').value=d.fm.changes||'';$('vlabel').textContent=`${piece()?.title||slug} · ${piece()?.genre||'reflective'} · v${n}${d.fm.draft==='true'?' · draft':' · public'}`;$('pdate').textContent=d.fm.date||'';
  $('log').textContent=d.log||'No passes yet.';$('coachmeta').textContent=passCount(d.log);$('coachout').innerHTML=lastPass(d.log);
  renderTabs();render();dirty=false;setStatus('Saved');$('body').focus()}
 function passCount(log){const c=(log.match(/^## /gm)||[]).length;return c?c+' pass'+(c>1?'es':''):''}
@@ -114,9 +115,11 @@ $('piece').onchange=async()=>{const p=pieces.find(p=>p.slug===$('piece').value);
 $('newpiece').onclick=()=>{$('ntitle').value='';$('nslug').value='';$('modal').classList.add('open');$('ntitle').focus()};
 $('ntitle').oninput=()=>{$('nslug').value=slugify($('ntitle').value)};
 $('ncancel').onclick=()=>$('modal').classList.remove('open');
-$('ncreate').onclick=async()=>{try{const r=await api('/api/piece',{slug:$('nslug').value,title:$('ntitle').value});$('modal').classList.remove('open');await loadPieces();await openVersion(r.slug,1)}catch(e){toast(e.message)}};
+$('ncreate').onclick=async()=>{try{const r=await api('/api/piece',{slug:$('nslug').value,title:$('ntitle').value,genre:$('ngenre').value});$('modal').classList.remove('open');await loadPieces();await openVersion(r.slug,1)}catch(e){toast(e.message)}};
 $('runcoach').onclick=async()=>{if(!cur.slug)return;await flush();const b=$('runcoach');b.disabled=true;$('coachout').innerHTML='<p class="hint"><span class="spin"></span>Coaching v'+cur.n+'. Reading every version and your patterns file. About a minute.</p>';
  try{const r=await api('/api/coach',{slug:cur.slug,n:cur.n,dimension:$('dimension').value});$('coachout').innerHTML='<div class="result">'+fmt(r.text)+'</div>';$('log').textContent=r.log||'';$('coachmeta').textContent=passCount(r.log)}catch(e){$('coachout').innerHTML='<p class="hint warn">Coach failed: '+e.message.replace(/</g,'&lt;')+'</p>'}finally{b.disabled=false}};
+$('runreader').onclick=async()=>{if(!cur.slug)return;await flush();const b=$('runreader'),c=$('runcoach');b.disabled=c.disabled=true;$('coachout').innerHTML='<p class="hint"><span class="spin"></span>Reading v'+cur.n+' as a reader. About a minute.</p>';
+ try{const r=await api('/api/reader',{slug:cur.slug,n:cur.n});$('coachout').innerHTML='<div class="result"><b>READER</b>'+fmt(r.text)+'</div>';$('log').textContent=r.log||'';$('coachmeta').textContent=passCount(r.log)}catch(e){$('coachout').innerHTML='<p class="hint warn">Reader failed: '+e.message.replace(/</g,'&lt;')+'</p>'}finally{b.disabled=c.disabled=false}};
 $('commit').onclick=async()=>{await flush();try{const r=await api('/api/commit',{slug:cur.slug||'workbench',message:cur.slug?`${cur.slug}: v${cur.n} edits`:''});toast(r.out)}catch(e){toast(e.message)}};
 let pubArmed=false;$('publish').onclick=async()=>{if(!cur.slug)return;if(!pubArmed){pubArmed=true;$('publish').textContent='Confirm: publish all versions and push';setTimeout(()=>{pubArmed=false;$('publish').textContent='Publish'},5000);return}
  pubArmed=false;$('publish').textContent='Publishing…';$('publish').disabled=true;await flush();try{const r=await api('/api/publish',{slug:cur.slug});toast(r.out,8000);await loadPieces();await openVersion(cur.slug,cur.n)}catch(e){toast('Publish failed: '+e.message,8000)}finally{$('publish').textContent='Publish';$('publish').disabled=false}};

@@ -68,6 +68,7 @@ def list_pieces():
                              "changes": vfm.get("changes", "")})
         versions.sort(key=lambda v: v["n"])
         out.append({"slug": slug, "title": fm.get("title", slug), "draft": fm.get("draft", "true") == "true",
+                    "genre": fm.get("genre", "reflective"),
                     "date": fm.get("date", ""), "versions": versions})
     out.sort(key=lambda p: p["date"], reverse=True)
     return out
@@ -115,7 +116,8 @@ class H(BaseHTTPRequestHandler):
                 slug, title = data["slug"].strip(), data["title"].strip()
                 if not SLUG_RE.match(slug): raise ValueError("slug: lowercase words joined by hyphens")
                 if not title: raise ValueError("title required")
-                code, out = run(["bin/new-piece", slug, title])
+                genre = data.get("genre", "reflective")
+                code, out = run(["bin/new-piece", slug, title, genre])
                 if code: raise RuntimeError(out)
                 self.send_json({"ok": True, "slug": slug})
             elif self.path == "/api/version/save":
@@ -135,6 +137,13 @@ class H(BaseHTTPRequestHandler):
                 ver = f" v{int(data['n'])}" if data.get("n") else ""
                 prompt = f"/coach {slug}{ver}" + (f" {dim}" if dim else "")
                 code, out = run(["claude", "-p", prompt, "--permission-mode", "acceptEdits", "--output-format", "text"],
+                                timeout=600)
+                if code: raise RuntimeError(out or "claude exited with error")
+                self.send_json({"ok": True, "text": out, "log": coach_log(slug)})
+            elif self.path == "/api/reader":
+                slug = data["slug"]; piece_dir(slug)
+                ver = f" v{int(data['n'])}" if data.get("n") else ""
+                code, out = run(["claude", "-p", f"/reader {slug}{ver}", "--permission-mode", "acceptEdits", "--output-format", "text"],
                                 timeout=600)
                 if code: raise RuntimeError(out or "claude exited with error")
                 self.send_json({"ok": True, "text": out, "log": coach_log(slug)})

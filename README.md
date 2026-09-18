@@ -8,12 +8,12 @@ A writing-practice blog. Hugo, no theme dependency, deployed to GitHub Pages. Ev
 bin/workbench
 ```
 
-Opens http://127.0.0.1:8787/ in your browser: piece picker, version tabs, your text on the left, preview on the right, coach panel beside it. Autosaves as you type. Buttons: New piece, New version, Coach this version, Commit, Publish. Ctrl+C in the terminal stops it. Needs `claude` installed for the Coach button.
+Opens http://127.0.0.1:8787/ in your browser: piece picker, version tabs, your text on the left, preview on the right, coach panel beside it. Autosaves as you type. Buttons: New piece (pick a lens: reflective essay, narrative, analytical), New version, Coach this version, Read as a reader, Commit, Publish. Ctrl+C in the terminal stops it. Needs `claude` installed for the Coach button.
 
 ## The terminal way
 
 ```
-bin/new-piece morning-pages "Why I write in the morning"   # creates v1.md, opens nothing, prints the path
+bin/new-piece morning-pages "Why I write in the morning" narrative   # lens: reflective (default) | narrative | analytical
 hugo server -D                                              # preview drafts at http://localhost:1313/writing/
 ```
 
@@ -53,5 +53,6 @@ The GitHub Action builds and deploys to https://benkaz3.github.io/writing/ in ab
 - `content/posts/<slug>/vN.md` one file per version, `version: N` and a `changes:` note
 - `layouts/` the whole theme, about 120 lines
 - `assets/css/style.css` the whole stylesheet
+- `coach/lenses/<genre>.md` what good writing looks like per genre; the coach reads the piece's lens before every pass
 - `coach/patterns.md` your recurring habits and strengths, updated by the coach
 - `coach/log/<slug>.md` every coaching pass, appended
