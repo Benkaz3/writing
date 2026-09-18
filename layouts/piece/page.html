@@ -1,0 +1,13 @@
+{{ define "main" }}
+{{ $piece := .Parent }}
+<article>
+  <header>
+    <p class="crumb"><a href="{{ $piece.RelPermalink }}">{{ $piece.Title }}</a></p>
+    <h1>{{ $piece.Title }} <span class="vtag">v{{ .Params.version }}</span></h1>
+    <p class="meta"><time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2 January 2006" }}</time> · {{ .WordCount }} words</p>
+    {{ partial "version-bar.html" (dict "piece" $piece "current" .) }}
+  </header>
+  {{ .Content }}
+  {{ with .Params.changes }}<aside class="changes"><strong>What changed in v{{ $.Params.version }}:</strong> {{ . }}</aside>{{ end }}
+</article>
+{{ end }}

@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# Start a new piece: bin/new-piece <slug> "Title"
+# Creates content/posts/<slug>/_index.md and v1.md (both draft), then prints the v1 path.
+set -euo pipefail
+if [ $# -lt 2 ]; then echo "usage: bin/new-piece <slug> \"Title\"" >&2; exit 1; fi
+slug=$1; title=$2
+root=$(cd "$(dirname "$0")/.." && pwd)
+dir="$root/content/posts/$slug"
+if [ -e "$dir" ]; then echo "already exists: $dir" >&2; exit 1; fi
+mkdir -p "$dir"
+today=$(date +%Y-%m-%d)
+cat > "$dir/_index.md" <<MD
+---
+title: "$title"
+description: ""
+date: $today
+type: piece
+cascade:
+  type: piece
+draft: true
+---
+MD
+cat > "$dir/v1.md" <<MD
+---
+title: "$title"
+date: $today
+version: 1
+draft: true
+changes: "First draft."
+---
+
+MD
+echo "$dir/v1.md"

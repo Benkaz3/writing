@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# Publish a piece (or one version): bin/publish <slug> [N]
+# Flips draft: true -> false on the piece page and on vN (or on all versions when N is omitted).
+set -euo pipefail
+if [ $# -lt 1 ]; then echo "usage: bin/publish <slug> [version]" >&2; exit 1; fi
+slug=$1; ver=${2:-}
+root=$(cd "$(dirname "$0")/.." && pwd)
+dir="$root/content/posts/$slug"
+[ -d "$dir" ] || { echo "no such piece: $dir" >&2; exit 1; }
+flip() { sed -i '' 's/^draft: true$/draft: false/' "$1"; echo "published: ${1#$root/}"; }
+flip "$dir/_index.md"
+if [ -n "$ver" ]; then flip "$dir/v$ver.md"; else for f in "$dir"/v*.md; do flip "$f"; done; fi

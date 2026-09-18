@@ -1,0 +1,38 @@
+:root {
+  --bg: #fbfaf7; --fg: #1f1f1f; --muted: #6b6b6b; --accent: #8a4b1f; --rule: #e6e2da; --aside: #f1ede4;
+  --serif: Charter, "Iowan Old Style", Georgia, "Times New Roman", serif;
+  --sans: system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #161616; --fg: #e6e2da; --muted: #9a958c; --accent: #d9a066; --rule: #2c2c2c; --aside: #202020; }
+}
+* { box-sizing: border-box; }
+html { font-size: 112.5%; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font-family: var(--serif); line-height: 1.6;
+  max-width: 42rem; padding: 1.5rem 1rem 4rem; margin-inline: auto;
+}
+a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.site-header { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--rule); margin-bottom: 2rem; font-family: var(--sans); }
+.site-title { font-weight: 700; color: var(--fg); text-decoration: none; font-size: 1.1rem; }
+.site-header nav a { margin-left: 1rem; font-size: .9rem; }
+h1 { font-size: 1.8rem; line-height: 1.2; margin: 0 0 .5rem; letter-spacing: -.01em; }
+h2 { font-size: 1.3rem; margin-top: 2rem; }
+p { margin: 0 0 1.1em; }
+.meta, .muted, .crumb { color: var(--muted); font-family: var(--sans); font-size: .85rem; }
+.crumb { margin-bottom: .25rem; }
+.vtag { font-family: var(--sans); font-weight: 400; color: var(--muted); font-size: .6em; vertical-align: middle; }
+.versions { font-family: var(--sans); font-size: .85rem; margin: .75rem 0 2rem; display: flex; gap: .6rem; flex-wrap: wrap; }
+.versions .label { color: var(--muted); }
+.versions .current { font-weight: 700; border-bottom: 2px solid var(--accent); }
+.piece-list { list-style: none; padding: 0; margin: 0; }
+.piece-list li { padding: 1rem 0; border-bottom: 1px solid var(--rule); }
+.piece-list li a { font-size: 1.15rem; }
+.piece-list .meta { display: block; margin-top: .2rem; }
+.piece-list p { margin: .3rem 0 0; }
+.changes { background: var(--aside); border-left: 3px solid var(--accent); padding: .75rem 1rem; margin: 2.5rem 0 0; font-family: var(--sans); font-size: .9rem; }
+.site-footer { margin-top: 4rem; padding-top: 1rem; border-top: 1px solid var(--rule); font-family: var(--sans); font-size: .8rem; color: var(--muted); }
+blockquote { margin: 1.2em 0; padding-left: 1rem; border-left: 3px solid var(--rule); color: var(--muted); }
+img { max-width: 100%; }
+code { font-size: .9em; }

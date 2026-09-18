@@ -1,0 +1,21 @@
+baseURL = "https://benkaz3.github.io/writing/"
+languageCode = "en-us"
+title = "Writing"
+enableRobotsTXT = true
+disableKinds = ["taxonomy", "term"]
+timeZone = "Asia/Ho_Chi_Minh"
+
+[params]
+description = "Writing practice, kept in versions."
+author = "Phong"
+
+[markup.goldmark.renderer]
+unsafe = false
+
+[markup.goldmark.parser.attribute]
+block = true
+
+[outputs]
+home = ["HTML", "RSS"]
+section = ["HTML"]
+page = ["HTML"]

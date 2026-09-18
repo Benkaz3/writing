@@ -1,0 +1,16 @@
+{{ $pieces := (site.GetPage "posts").Sections }}
+{{ if not $pieces }}<p class="muted">Nothing published yet.</p>{{ end }}
+<ul class="piece-list">
+{{ range $pieces.ByDate.Reverse }}
+  {{ $versions := sort .RegularPages "Params.version" "asc" }}
+  {{ $latest := index ($versions.Reverse) 0 }}
+  <li>
+    <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+    <span class="meta">
+      {{ with $latest }}<time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2 Jan 2006" }}</time> · v{{ .Params.version }}{{ end }}
+      {{ if gt (len $versions) 1 }} · {{ len $versions }} versions{{ end }}
+    </span>
+    {{ with .Description }}<p class="muted">{{ . }}</p>{{ end }}
+  </li>
+{{ end }}
+</ul>

@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# Start the next version of a piece: bin/new-version <slug>
+# Copies the body of the latest vN.md into v(N+1).md with fresh front matter.
+# You write the new text and the "changes" note yourself.
+set -euo pipefail
+if [ $# -lt 1 ]; then echo "usage: bin/new-version <slug>" >&2; exit 1; fi
+slug=$1
+root=$(cd "$(dirname "$0")/.." && pwd)
+dir="$root/content/posts/$slug"
+[ -d "$dir" ] || { echo "no such piece: $dir" >&2; exit 1; }
+latest=$(ls "$dir"/v*.md | sed -E 's/.*v([0-9]+)\.md$/\1/' | sort -n | tail -1)
+next=$((latest + 1))
+src="$dir/v$latest.md"; dst="$dir/v$next.md"
+title=$(grep -m1 '^title:' "$src" | sed 's/^title: //')
+today=$(date +%Y-%m-%d)
+{
+  printf -- '---\ntitle: %s\ndate: %s\nversion: %s\ndraft: true\nchanges: ""\n---\n' "$title" "$today" "$next"
+  awk 'BEGIN{c=0} c<2 && /^---[[:space:]]*$/ {c++; next} c>=2 {print}' "$src"
+} > "$dst"
+echo "$dst"

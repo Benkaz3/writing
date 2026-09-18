@@ -1,0 +1,21 @@
+{{ define "main" }}
+{{ $versions := sort .RegularPages "Params.version" "asc" }}
+{{ $latest := index ($versions.Reverse) 0 }}
+<article>
+  <header>
+    <h1>{{ .Title }}</h1>
+    {{ with .Description }}<p class="muted">{{ . }}</p>{{ end }}
+    {{ with $latest }}
+    <p class="meta"><time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2 January 2006" }}</time> · v{{ .Params.version }} (latest) · {{ .WordCount }} words</p>
+    {{ end }}
+    {{ partial "version-bar.html" (dict "piece" . "current" $latest) }}
+  </header>
+  {{ .Content }}
+  {{ with $latest }}
+    {{ .Content }}
+    {{ with .Params.changes }}<aside class="changes"><strong>What changed in v{{ $latest.Params.version }}:</strong> {{ . }}</aside>{{ end }}
+  {{ else }}
+    <p class="muted">No published version yet.</p>
+  {{ end }}
+</article>
+{{ end }}

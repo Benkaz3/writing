@@ -1,0 +1,14 @@
+{{/* context: dict "piece" <section page> "current" <version page or nil> */}}
+{{ $piece := .piece }}
+{{ $current := .current }}
+{{ $versions := sort $piece.RegularPages "Params.version" "asc" }}
+<nav class="versions" aria-label="Versions">
+  <span class="label">Versions:</span>
+  {{ range $versions }}
+    {{ if and $current (eq .Params.version $current.Params.version) }}
+      <span class="current">v{{ .Params.version }}</span>
+    {{ else }}
+      <a href="{{ .RelPermalink }}">v{{ .Params.version }}</a>
+    {{ end }}
+  {{ end }}
+</nav>
