@@ -31,7 +31,7 @@ textarea#body{flex:1;resize:none;border:0;border-radius:0;padding:1.5rem 2rem;fo
 #preview p{margin:0 0 1.1em} #preview blockquote{border-left:3px solid var(--rule);margin:1em 0;padding-left:1rem;color:var(--muted)}
 #coach{flex:1;overflow:auto;padding:1rem}
 #coach .result{white-space:pre-wrap;font-size:.9rem;line-height:1.5;background:var(--aside);border-left:3px solid var(--accent);padding:.8rem 1rem;border-radius:0 6px 6px 0}
-#coach .result b{display:block;margin-top:.7rem;color:var(--accent)} #coach .result b:first-child{margin-top:0}
+#coach .result b{display:block;margin-top:.7rem;color:var(--accent)} #coach .result b:first-child{margin-top:0} #coach .result strong{color:var(--muted);font-weight:600}
 #coach details{margin-top:1rem;font-size:.85rem} #coach pre{white-space:pre-wrap;font-size:.8rem;color:var(--muted)}
 #coach .hint{color:var(--muted);font-size:.85rem;line-height:1.5}
 #coach .row{display:flex;gap:.5rem;margin-bottom:.8rem} #coach .row input{flex:1;font-size:.85rem}
@@ -107,7 +107,7 @@ function wasCoached(log,n){return new RegExp('^## .* - v'+n+' - (?!.*- reader\\s
 function setLock(on){$('body').readOnly=on;$('changes').readOnly=on;$('locked').style.display=on?'block':'none';$('body').style.opacity=on?.7:1}
 function passCount(log){const c=(log.match(/^## /gm)||[]).length;return c?c+' pass'+(c>1?'es':''):''}
 function lastPass(log){const m=log.trim().split(/^(?=## )/m).filter(Boolean).pop();if(!m)return '<p class="hint">Press Coach for feedback on this draft. At most three things to fix. Nothing is rewritten for you. About a minute.</p>';return '<div class="result">'+fmt(m)+'</div>'}
-function fmt(t){return t.replace(/^```.*$/gm,'').trim().replace(/</g,'&lt;').replace(/^(FLAGS|KEEP|NEXT)\s*$/gm,'<b>$1</b>')}
+function fmt(t){return t.replace(/^```.*$/gm,'').trim().replace(/</g,'&lt;').replace(/^(FLAGS|KEEP|NEXT)\s*$/gm,'<b>$1</b>').replace(/^(\s*)(What|Why|Do):/gm,'$1<strong>$2:</strong>')}
 function scheduleSave(){dirty=true;setStatus('Editing…');clearTimeout(saveTimer);saveTimer=setTimeout(save,1500)}
 async function save(){if(!cur.slug||!dirty||saving)return;saving=true;try{await api('/api/version/save',{slug:cur.slug,n:cur.n,body:$('body').value,changes:$('changes').value});dirty=false;setStatus('Saved','ok');const v=piece()?.versions.find(v=>v.n===cur.n);if(v)v.changes=$('changes').value}catch(e){setStatus('Save failed: '+e.message,'warn')}finally{saving=false}}
 async function flush(){clearTimeout(saveTimer);if(dirty)await save()}

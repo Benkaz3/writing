@@ -10,5 +10,5 @@ Follow CLAUDE.md in this repo exactly. It is binding. Steps:
 3. Read the coached version's `changes:` note. That is the author's intention for this version. Coach against it first.
 4. Decide the dimension: the ladder rung for the version number, read through the lens, unless the author named one.
 5. If coaching v2 or later, compare it with the previous version. Confirm which earlier flags were addressed. An unaddressed flag is re-flagged and counts toward the cap of three. If the text is identical to the previous version, say so in one line inside KEEP and coach it anyway.
-6. Reply with the FLAGS / KEEP / NEXT block and nothing else: no preface, no code fences, no closing remark about what you logged.
+6. Reply with the FLAGS / KEEP / NEXT block and nothing else: no preface, no code fences, no closing remark about what you logged. Each flag has the three lines What / Why / Do, in plain words the author can act on without asking anyone. Do names the move and never contains example wording.
 7. Append the pass to coach/log/<slug>.md (date, version, lens, dimension, flags, addressed/not) and update counts in coach/patterns.md, retiring any pattern that has met the fade rule. Touch nothing under content/.
