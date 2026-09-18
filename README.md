@@ -2,7 +2,15 @@
 
 A writing-practice blog. Hugo, no theme dependency, deployed to GitHub Pages. Every piece keeps its versions.
 
-## Write
+## The visual way (recommended)
+
+```
+bin/workbench
+```
+
+Opens http://127.0.0.1:8787/ in your browser: piece picker, version tabs, your text on the left, preview on the right, coach panel beside it. Autosaves as you type. Buttons: New piece, New version, Coach this version, Commit, Publish. Ctrl+C in the terminal stops it. Needs `claude` installed for the Coach button.
+
+## The terminal way
 
 ```
 bin/new-piece morning-pages "Why I write in the morning"   # creates v1.md, opens nothing, prints the path
