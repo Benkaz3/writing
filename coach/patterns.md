@@ -15,6 +15,7 @@ Format: `- [ ] pattern - first seen / last seen / count`. Tick when it stops app
 - [ ] Paragraphs separated by a single newline, render as one block - 2026-09-18 / 2026-09-18 / 1
 - [ ] Paragraph carrying more than one turn of thought - 2026-09-18 / 2026-09-18 / 1
 - [ ] First sentence that does not announce the paragraph's turn - 2026-09-18 / 2026-09-18 / 1
+- [ ] Throat-clearing announcements ("Let's ...", sentences that only say what the next one will do) - 2026-09-18 / 2026-09-18 / 1
 
 ## Retired
 - [x] Spelling slips - retired 2026-09-07 after clean drafts all week; reappeared 2026-09-18 (1 of 2 before reopening)

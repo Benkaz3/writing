@@ -100,3 +100,19 @@ Also seen, not flagged: "Let's put it this way, would" opens on the TV show with
 Pattern counts not incremented: same piece, all three patterns already counted for it.
 KEEP: "Is this always true in everything" paragraph - one turn, in the order question, the men, the writer's guess, the claim risked at the end ("the issue of discrimination is born"). Noted v2 text unchanged since last pass.
 NEXT: v3 - save as a new file; one turn per paragraph with a first sentence that announces it, then check each singular countable noun for its article.
+
+## 2026-09-18 - v3 - Cutting (reflective lens by default, no `genre:` in _index.md)
+changes note: empty, so no stated intention to coach against. Diff v2 -> v3: the "So what is the difference" paragraph split in two at "Then we must break down"; "TV show is a business" now has its article; "showmakers" -> "show makers"; "The next factor" -> "The other factor"; stray tabs removed. Eight paragraphs now.
+Earlier flags (v2 pass three, plus the one held over from pass two):
+1. "TV show is a business" - addressed at that spot; "creatively better product" still lacks its article (not re-flagged, cap).
+2. "So what is the difference between" - addressed: cooking test and TV show breakdown are now separate paragraphs, one turn each.
+3. "The next factor that also makes" (now "The other factor that also makes") - not addressed: first sentence still announces unsurprising elements while the paragraph moves to "based on real life events"; "The difference is the elements" still has no referent. Re-flagged.
+4. "Then the real question one must" (held over) - not addressed: opening paragraph still carries three turns. Re-flagged.
+Flags this pass:
+1. "The other factor that also makes" - first sentence that does not announce the turn (re-flag).
+2. "Then the real question one must" - paragraph with three turns (re-flag of held-over flag).
+3. "Let's simplify it" - throat-clearing (cutting rung); same move at "Let's put it this way" and "Let's circle back".
+Also seen, not flagged (cutting): closing paragraph summarises ("This means the two cases are"); "Not very often I guess" and "My guess is that" hedges; "really", "very" doubled intensifiers ("very close", "very passionate", "very often", "very different"); "that also makes" (doubled "other ... also"); "In order for that to happen". Carried over: "Two main things - one is" (~40 words); "creatively better product" missing article; "an hilarious"; typos ("informercial", "the who industry", "could a a part") - retired Spelling slips, still reappearance 1 of 2 (same piece).
+Pattern counts: one new open pattern added (throat-clearing announcements), count 1; others not incremented, same piece. No pattern meets the fade rule (this is not a new first draft).
+KEEP: the split at "Then we must break down" - the cooking paragraph now ends on its own claim ("It does not have an impact") and the reader sees the turn to the TV show as a turn.
+NEXT: v4 - finish the two open paragraphs, then cut every sentence that only announces what the next sentence does; fill in `changes:`.
