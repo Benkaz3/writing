@@ -8,7 +8,7 @@ A writing-practice blog. Hugo, no theme dependency, deployed to GitHub Pages. Ev
 bin/workbench
 ```
 
-Opens http://127.0.0.1:8787/ in your browser: piece picker, version tabs, your text on the left, preview on the right, coach panel beside it. Autosaves as you type. Buttons: New piece (pick a lens: reflective essay, narrative, analytical), New version, Coach this version, Read as a reader, Commit, Publish. Ctrl+C in the terminal stops it. Needs `claude` installed for the Coach button.
+Opens http://127.0.0.1:8787/ in your browser: piece picker, version tabs, your text on the left, preview on the right, coach panel beside it. Autosaves as you type. Buttons: New piece (pick a lens: reflective essay, narrative, analytical), Coach this version (returns flags and opens the next version for you to revise), Read as a reader, Commit, Publish. Ctrl+C in the terminal stops it. Needs `claude` installed for the Coach button.
 
 ## The terminal way
 

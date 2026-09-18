@@ -59,8 +59,8 @@ textarea#body{flex:1;resize:none;border:0;border-radius:0;padding:1.5rem 2rem;fo
 <main>
   <div class="col">
     <div class="colhead"><span id="vlabel">Draft</span><span id="words"></span></div>
-    <div id="locked" style="display:none;padding:.5rem 1rem;background:var(--aside);border-bottom:1px solid var(--rule);font-size:.85rem;display:none;align-items:center;gap:.6rem"><span>This version has been coached, so it is locked to keep the record honest.</span><button id="lockednew" class="primary">Start the next version</button><a href="#" id="unlock" style="margin-left:auto;color:var(--muted);font-size:.8rem">unlock anyway</a></div>
-    <div id="empty">Start with <b>New piece</b>. Give it a title, then write version 1 here. When you want feedback, press <b>Coach</b>. After you read the flags, press <b>New version</b>, revise, and say what you changed.</div>
+    <div id="locked" style="display:none;padding:.5rem 1rem;background:var(--aside);border-bottom:1px solid var(--rule);font-size:.85rem;display:none;align-items:center;gap:.6rem"><span>This version was already coached, so it is locked. Revisions go in the next version.</span><button id="lockednew" class="primary">Open the next version</button><a href="#" id="unlock" style="margin-left:auto;color:var(--muted);font-size:.8rem">unlock anyway</a></div>
+    <div id="empty">Start with <b>New piece</b>. Give it a title, then write here. When the draft is ready, press <b>Coach</b>. You get three flags, and the next version opens beside them for you to revise. Say what you changed, then press Coach again.</div>
     <textarea id="body" spellcheck="true" placeholder="Write here." style="display:none"></textarea>
     <div id="changesbox" style="display:none"><span>What changed in this version:</span><input id="changes" placeholder="In your own words, one line."></div>
   </div>
@@ -72,7 +72,7 @@ textarea#body{flex:1;resize:none;border:0;border-radius:0;padding:1.5rem 2rem;fo
     <div class="colhead"><span>Coach</span><span id="coachmeta"></span></div>
     <div id="coach">
       <div class="row"><button id="runcoach" class="primary">Coach this version</button><button id="runreader" title="Plain account of a reader's experience. No flags, no advice.">Read as a reader</button><input id="dimension" placeholder="dimension (optional)" title="Leave blank to follow the ladder"></div>
-      <div id="coachout"><p class="hint">One pass per version. At most three flags, one thing to keep, one next step. Nothing is rewritten for you. Takes about a minute.</p></div>
+      <div id="coachout"><p class="hint">Press Coach when the draft is ready. Three flags at most, one thing to keep, one next step, and the next version opens for your revision. Nothing is rewritten for you. About a minute.</p></div>
       <details id="logwrap"><summary>Past passes</summary><pre id="log"></pre></details>
     </div>
   </div>
@@ -87,7 +87,7 @@ textarea#body{flex:1;resize:none;border:0;border-radius:0;padding:1.5rem 2rem;fo
 <div id="toast"></div>
 <script>
 const $=id=>document.getElementById(id);
-let pieces=[],cur={slug:null,n:null},dirty=false,saveTimer=null,saving=false;
+let keepCoach=null,pieces=[],cur={slug:null,n:null},dirty=false,saveTimer=null,saving=false;
 const api=async(path,body)=>{const r=await fetch(path,body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:{});const j=await r.json();if(j.error)throw new Error(j.error);return j;};
 const toast=(m,ms=3500)=>{$('toast').textContent=m;$('toast').style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>$('toast').style.display='none',ms)};
 const setStatus=(t,cls='')=>{$('status').textContent=t;$('status').className='status '+cls};
@@ -96,18 +96,18 @@ function render(){const t=$('body').value;$('preview').innerHTML=window.marked?m
 async function loadPieces(){pieces=(await api('/api/pieces')).pieces;const sel=$('piece');sel.innerHTML=pieces.map(p=>`<option value="${p.slug}">${p.title}${p.draft?' (draft)':''}</option>`).join('')||'<option value="">No pieces yet</option>';if(cur.slug)sel.value=cur.slug}
 function piece(){return pieces.find(p=>p.slug===cur.slug)}
 function renderTabs(){const p=piece();const t=$('tabs');if(!p){t.innerHTML='';return}
- t.innerHTML=p.versions.map(v=>`<button class="tab${v.n===cur.n?' active':''}" data-n="${v.n}" title="${v.draft?'draft':'public'}">v${v.n}${v.draft?'':' ●'}</button>`).join('')+`<button id="newver" title="Copy this text into the next version">New version</button>`;
+ t.innerHTML=p.versions.map(v=>`<button class="tab${v.n===cur.n?' active':''}" data-n="${v.n}" title="${v.draft?'draft':'public'}">v${v.n}${v.draft?'':' ●'}</button>`).join('')+'';
  t.querySelectorAll('.tab').forEach(b=>b.onclick=()=>openVersion(cur.slug,+b.dataset.n));
- $('newver').onclick=newVersion}
+}
 async function openVersion(slug,n){await flush();cur={slug,n};const d=await api(`/api/version?slug=${slug}&n=${n}`);
  $('empty').style.display='none';$('body').style.display='';$('changesbox').style.display='';
  $('body').value=d.body;$('changes').value=d.fm.changes||'';$('vlabel').textContent=`${piece()?.title||slug} · v${n}${d.fm.draft==='true'?' · draft':' · public'}`;$('lens').style.display='';$('lens').value=piece()?.genre||'reflective';$('pdate').textContent=d.fm.date||'';
- $('log').textContent=d.log||'No passes yet.';$('coachmeta').textContent=passCount(d.log);$('coachout').innerHTML=lastPass(d.log);
+ $('log').textContent=d.log||'No passes yet.';$('coachmeta').textContent=passCount(d.log);$('coachout').innerHTML=keepCoach||lastPass(d.log);keepCoach=null;
  renderTabs();render();dirty=false;setStatus('Saved');setLock(wasCoached(d.log,n));if(!$('body').readOnly)$('body').focus()}
 function wasCoached(log,n){return new RegExp('^## .* - v'+n+' - (?!.*- reader\\s*$)','m').test(log||'')}
 function setLock(on){$('body').readOnly=on;$('changes').readOnly=on;$('locked').style.display=on?'flex':'none';$('body').style.opacity=on?.7:1}
 function passCount(log){const c=(log.match(/^## /gm)||[]).length;return c?c+' pass'+(c>1?'es':''):''}
-function lastPass(log){const m=log.trim().split(/^(?=## )/m).filter(Boolean).pop();if(!m)return '<p class="hint">One pass per version. At most three flags, one thing to keep, one next step. Nothing is rewritten for you. Takes about a minute.</p>';return '<div class="result">'+fmt(m)+'</div>'}
+function lastPass(log){const m=log.trim().split(/^(?=## )/m).filter(Boolean).pop();if(!m)return '<p class="hint">Press Coach when the draft is ready. Three flags at most, one thing to keep, one next step, and the next version opens for your revision. Nothing is rewritten for you. About a minute.</p>';return '<div class="result">'+fmt(m)+'</div>'}
 function fmt(t){return t.replace(/^```.*$/gm,'').trim().replace(/</g,'&lt;').replace(/^(FLAGS|KEEP|NEXT)\s*$/gm,'<b>$1</b>')}
 function scheduleSave(){dirty=true;setStatus('Editing…');clearTimeout(saveTimer);saveTimer=setTimeout(save,1500)}
 async function save(){if(!cur.slug||!dirty||saving)return;saving=true;try{await api('/api/version/save',{slug:cur.slug,n:cur.n,body:$('body').value,changes:$('changes').value});dirty=false;setStatus('Saved','ok');const v=piece()?.versions.find(v=>v.n===cur.n);if(v)v.changes=$('changes').value}catch(e){setStatus('Save failed: '+e.message,'warn')}finally{saving=false}}
@@ -122,7 +122,8 @@ $('ntitle').oninput=()=>{$('nslug').value=slugify($('ntitle').value)};
 $('ncancel').onclick=()=>$('modal').classList.remove('open');
 $('ncreate').onclick=async()=>{try{const r=await api('/api/piece',{slug:$('nslug').value,title:$('ntitle').value,genre:$('ngenre').value});$('modal').classList.remove('open');await loadPieces();await openVersion(r.slug,1)}catch(e){toast(e.message)}};
 $('runcoach').onclick=async()=>{if(!cur.slug)return;await flush();const b=$('runcoach');b.disabled=true;$('coachout').innerHTML='<p class="hint"><span class="spin"></span>Coaching v'+cur.n+'. Reading every version and your patterns file. About a minute.</p>';
- try{const r=await api('/api/coach',{slug:cur.slug,n:cur.n,dimension:$('dimension').value});$('coachout').innerHTML='<div class="result">'+fmt(r.text)+'</div>';$('log').textContent=r.log||'';$('coachmeta').textContent=passCount(r.log);setLock(true)}catch(e){$('coachout').innerHTML='<p class="hint warn">Coach failed: '+e.message.replace(/</g,'&lt;')+'</p>'}finally{b.disabled=false}};
+ try{const r=await api('/api/coach',{slug:cur.slug,n:cur.n,dimension:$('dimension').value});const html='<div class="result">'+fmt(r.text)+'</div>';$('coachout').innerHTML=html;$('log').textContent=r.log||'';$('coachmeta').textContent=passCount(r.log);setLock(true);
+  const prev=cur.n;const nv=await api('/api/version/new',{slug:cur.slug});await loadPieces();keepCoach=html;await openVersion(cur.slug,nv.n);toast(`Flags are for v${prev}. You are now editing v${nv.n}, a copy of it. Fix, then say what changed.`,7000)}catch(e){$('coachout').innerHTML='<p class="hint warn">Coach failed: '+e.message.replace(/</g,'&lt;')+'</p>'}finally{b.disabled=false}};
 $('runreader').onclick=async()=>{if(!cur.slug)return;await flush();const b=$('runreader'),c=$('runcoach');b.disabled=c.disabled=true;$('coachout').innerHTML='<p class="hint"><span class="spin"></span>Reading v'+cur.n+' as a reader. About a minute.</p>';
  try{const r=await api('/api/reader',{slug:cur.slug,n:cur.n});$('coachout').innerHTML='<div class="result"><b>READER</b>'+fmt(r.text)+'</div>';$('log').textContent=r.log||'';$('coachmeta').textContent=passCount(r.log)}catch(e){$('coachout').innerHTML='<p class="hint warn">Reader failed: '+e.message.replace(/</g,'&lt;')+'</p>'}finally{b.disabled=c.disabled=false}};
 $('lockednew').onclick=newVersion;$('unlock').onclick=e=>{e.preventDefault();setLock(false);$('body').focus();toast('Unlocked. Small fixes only; revisions belong in a new version.')};
