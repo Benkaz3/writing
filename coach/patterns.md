@@ -19,6 +19,7 @@ Format: `- [ ] pattern - first seen / last seen / count`. Tick when it stops app
 - [ ] Participle adjective form (-ed form, which names the person feeling it, on a thing) - 2026-09-18 / 2026-09-18 / 1
 - [ ] Connotation working against the sentence's claim - 2026-09-18 / 2026-09-18 / 1
 - [ ] Register shift (colloquial word inside analytic prose) - 2026-09-18 / 2026-09-18 / 1
+- [ ] Writer hidden behind generic you/one/we where the writer's own "I" is the evidence - 2026-09-18 / 2026-09-18 / 1
 
 ## Retired
 - [x] Spelling slips - retired 2026-09-07 after clean drafts all week; reappeared 2026-09-18 (1 of 2 before reopening)

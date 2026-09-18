@@ -131,3 +131,18 @@ Also seen, not flagged (vocabulary): "an apartment complex yard" generic nouns f
 Pattern counts: three new open patterns added (participle adjective form; connotation working against the claim; register shift), count 1 each; others not incremented, same piece. No pattern meets the fade rule (not a new first draft).
 KEEP: "It works for the audience but" - the rewritten paragraph ends on a short claim the writer risks, and the cut of the three sentences before it lets the reader reach that claim.
 NEXT: v5 - find your own word for each of the three spots, and fill in `changes:` so the next pass can coach against your intention.
+
+## 2026-09-18 - v5 - Voice and reader (reflective lens by default, no `genre:` in _index.md)
+changes note: empty again, so no stated intention to coach against. Diff v4 -> v5, three spots only: "very passionate, physically about how they interact" -> "very passionate about how they physically interact"; "freak out" now inside quotation marks; "unsurprised elements introduced to the show" -> "unsurprised elements in the show".
+Earlier flags (v4):
+1. "the unsurprised elements introduced" - not addressed: "introduced" cut, the -ed form still sits on a thing. Re-flagged.
+2. "People can be very passionate, physically" - not addressed: the modifier moved (fixes the placement noted on v1 pass five), the adjective and its romantic charge are unchanged. Re-flagged.
+3. "they would freak out" - addressed by the author's choice: quotation marks now mark the colloquial word as deliberate, so the reader no longer takes it as a slip of register.
+Flags this pass:
+1. "the unsurprised elements in the show" - participle adjective form (re-flag).
+2. "People can be very passionate about" - connotation working against the claim (re-flag).
+3. "How often do you see two" - generic "you": the writer disappears; the reader never learns whether the writer saw the men. Same hiding at "one must ask", "Our instinct always puts us".
+Also seen, not flagged (voice): "Not very often I guess", "My guess is that", "at least for the older generation", "at least in the eyes of the writer" hedges; closing paragraph retreats ("at least it is in the context of this analysis") and summarises; "Then we must break down" generic "we"; honesty test open on "Knowing how things work very often makes you". Carried over: "Two main things - one is" (~40 words); "the writer herself creates these elements themselves" doubled reflexive; "an hilarious"; "the brand people" register; typos ("informercial", "the who industry", "could a a part") - retired Spelling slips, still reappearance 1 of 2 (same piece).
+Pattern counts: one new open pattern added (writer hidden behind generic you/one/we), count 1; others not incremented, same piece. No pattern meets the fade rule (not a new first draft).
+KEEP: "how they physically interact" - the modifier now sits beside the verb it modifies, so the reader attaches it once and moves on.
+NEXT: v6 - find your own word at the two open spots, then test every "you", "one" and "we" for whether it stands in for "I"; fill in `changes:`.
